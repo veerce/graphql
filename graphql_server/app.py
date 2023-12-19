@@ -105,7 +105,7 @@ schema = strawberry.Schema(query=Query)
 graphql_app = GraphQLRouter(schema, graphiql=True)
 app = FastAPI()
 app.include_router(graphql_app, prefix="/graphql")
-origins = "http://localhost:3000"
+origins = ["http://localhost:3000"]
 
 
 app.add_middleware(
