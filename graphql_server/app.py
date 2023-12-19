@@ -3,6 +3,7 @@ import requests
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 recipeURL = "http://ec2-54-164-52-42.compute-1.amazonaws.com:8011"
 reviewURL = "http://review-management-402504.ue.r.appspot.com"
@@ -104,6 +105,16 @@ schema = strawberry.Schema(query=Query)
 graphql_app = GraphQLRouter(schema, graphiql=True)
 app = FastAPI()
 app.include_router(graphql_app, prefix="/graphql")
+origins = "http://localhost:3000"
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
