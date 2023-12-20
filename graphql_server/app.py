@@ -5,7 +5,7 @@ from strawberry.fastapi import GraphQLRouter
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
-recipeURL = "http://ec2-18-209-24-141.compute-1.amazonaws.com:8011"
+recipeURL = "http://ec2-54-160-239-222.compute-1.amazonaws.com:8011"
 reviewURL = "http://review-management-402504.ue.r.appspot.com"
 
 @strawberry.type
