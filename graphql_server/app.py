@@ -110,10 +110,7 @@ graphql_app = GraphQLRouter(schema, graphiql=True)
 app = FastAPI()
 app.include_router(graphql_app, prefix="/graphql")
 
-origins = [
-    "http://localhost:3000",  # Assuming the frontend runs on localhost:3000
-    "http://127.0.0.1:3000",   # Include this if you access the frontend via 127.0.0.1
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
