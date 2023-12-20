@@ -5,7 +5,7 @@ from strawberry.fastapi import GraphQLRouter
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
-recipeURL = "http://ec2-54-164-52-42.compute-1.amazonaws.com:8011"
+recipeURL = "http://ec2-18-209-24-141.compute-1.amazonaws.com:8011"
 reviewURL = "http://review-management-402504.ue.r.appspot.com"
 
 @strawberry.type
@@ -20,7 +20,7 @@ class Review:
     text: str
     upvotes: int
     downvotes: int
-    
+
     # get the title associated with the review 
     @strawberry.field
     def recipe_title(self) -> str:
@@ -54,6 +54,7 @@ class Query:
         response = requests.get(f"{reviewURL}/user/{user_id}")
         if response.status_code == 200:
             review_tuples = response.json()  # Assuming this returns a list of tuples
+            print('review tuples', review_tuples)
             # Map the tuple data to Review instances
             reviews = [
                 Review(
@@ -71,13 +72,15 @@ class Query:
             return reviews
         else:
             return []
-    
+
     # fetch data for a specific recipe 
     @strawberry.field
     def recipe(self, recipe_id: strawberry.ID) -> Recipe:
         response = requests.get(f"{recipeURL}/recipes/{recipe_id}")
         if response.status_code == 200:
-            return response.json()
+            data = response.json()
+            print('data', data)
+            return data
         else:
             return None
 
@@ -87,6 +90,7 @@ class Query:
         response = requests.get(f"{reviewURL}/reviews/{review_id}")
         if response.status_code == 200:
             review_tuple = response.json()  # Assuming this returns a tuple
+            print('review tuple', review_tuple)
             return Review(
                 review_id=str(review_tuple[0]),
                 recipe_id=str(review_tuple[1]),
@@ -105,8 +109,11 @@ schema = strawberry.Schema(query=Query)
 graphql_app = GraphQLRouter(schema, graphiql=True)
 app = FastAPI()
 app.include_router(graphql_app, prefix="/graphql")
-origins = ["http://localhost:3000"]
 
+origins = [
+    "http://localhost:3000",  # Assuming the frontend runs on localhost:3000
+    "http://127.0.0.1:3000",   # Include this if you access the frontend via 127.0.0.1
+]
 
 app.add_middleware(
     CORSMiddleware,
